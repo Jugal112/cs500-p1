@@ -1,4 +1,4 @@
-package edu.drexel.cs461.examples;
+package healthy_me;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
