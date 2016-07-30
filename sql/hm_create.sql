@@ -25,6 +25,7 @@ create table have_BodyStats (
    user_id integer not null,
    height numeric not null, 
    weight numeric not null,
+   date_x date not null, 
    primary key (stat_id, user_id),
    foreign key (user_id) references Users(user_id) on delete cascade
 );

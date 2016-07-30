@@ -5,7 +5,7 @@
 -- Insert data into tables
 
 -- **IMP. Currently we have 10 users in our database. 
--- In the interest of saving space, all tables except Users and have_BodyStats carry data for only 2 users. 
+-- In the interest of saving space, all tables except Users carry data for only 2 users. 
 -- Also, the data is only spread over a 5 day period from 2016-07-04 (Monday) to 2016-07-08 (Friday).
 
 -- Users
@@ -22,18 +22,18 @@ insert into Users values (8, 'Hua', 'Mulan', 17);
 insert into Users values (9, 'Princess Leia', 'Organa', 26);
 
 -- have_BodyStats
--- 1 row for each user. Values for 10 users. 10 entries.
+-- 1 value per day per user. Values for 2 users over 5 days. 10 entries.
 -- Height in Meters, Weight in Kilograms.
-insert into have_BodyStats(stat_id, user_id, height, weight) values (0, 0, 1.89, 72.57);
-insert into have_BodyStats values (1, 1, 1.58, 54.43);
-insert into have_BodyStats values (2, 2, 1.89, 82.55);
-insert into have_BodyStats values (3, 3, 1.83, 72.57);
-insert into have_BodyStats values (4, 4, 1.56, 72.12);
-insert into have_BodyStats values (5, 5, 1.55, 74.84);
-insert into have_BodyStats values (6, 6, 1.71, 55.79);
-insert into have_BodyStats values (7, 7, 1.58, 50.80);
-insert into have_BodyStats values (8, 8, 1.65, 53.52);
-insert into have_BodyStats values (9, 9, 1.76, 59.87);
+insert into have_BodyStats(stat_id, user_id, height, weight, date_x) values (0, 0, 1.89, 72.57, '2016-07-04');
+insert into have_BodyStats values (1, 1, 1.58, 54.43, '2016-07-04');
+insert into have_BodyStats values (2, 0, 1.89, 72.55, '2016-07-05');
+insert into have_BodyStats values (3, 1, 1.58, 54.77, '2016-07-05');
+insert into have_BodyStats values (4, 0, 1.89, 72.12, '2016-07-06');
+insert into have_BodyStats values (5, 1, 1.58, 53.84, '2016-07-06');
+insert into have_BodyStats values (6, 0, 1.89, 72.09, '2016-07-07');
+insert into have_BodyStats values (7, 1, 1.58, 53.20, '2016-07-07');
+insert into have_BodyStats values (8, 0, 1.89, 71.52, '2016-07-08');
+insert into have_BodyStats values (9, 1, 1.58, 52.87, '2016-07-08');
 
 -- walk_Steps:
 -- Total steps walked per user per day. Values for 2 users over 5 days. 10 entries.
