@@ -93,7 +93,7 @@ public class HealthyMeServlet extends HttpServlet {
                 + "<input type='hidden' name='form' value='bmi'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
-                + "Date (optional): <input type='date' name='date_x'><br>"
+                + "Date: <input type='date' name='date_x'><br>"
                 + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
@@ -103,8 +103,8 @@ public class HealthyMeServlet extends HttpServlet {
                 + "<input type='hidden' name='form' value='weight_difference'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
-                + "Date: <input type='date' name='date_x'><br>"
-                + "Date: <input type='date' name='date_y'><br>"
+                + "Date From: <input type='date' name='date_x'><br>"
+                + "Date To: <input type='date' name='date_y'><br>"
                 + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
@@ -124,7 +124,7 @@ public class HealthyMeServlet extends HttpServlet {
                 + "<input type='hidden' name='form' value='calories_consumed'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
-                + "Date (optional): <input type='date' name='date_x'><br>"
+                + "Date: <input type='date' name='date_x'><br>"
                 + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
@@ -134,7 +134,7 @@ public class HealthyMeServlet extends HttpServlet {
                 + "<input type='hidden' name='form' value='calories_burned'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
-                + "Date (optional): <input type='date' name='date_x'><br>"
+                + "Date: <input type='date' name='date_x'><br>"
                 + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
@@ -184,13 +184,13 @@ public class HealthyMeServlet extends HttpServlet {
 
         //Average Sleep Heart Rate
         out.println("<form>"
-                + "<h2>14. Average Heart Rate During periods of Sleep</h2>"
+                + "<h2>14. Average Heart Rate During Periods of Sleep</h2>"
                 + "<input type='hidden' name='form' value='average_sleep_heart_rate'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date From: <input type='date' name='date_x'><br>"
                 + "Date To: <input type='date' name='date_y'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Average Resting Heart Rate
@@ -199,7 +199,7 @@ public class HealthyMeServlet extends HttpServlet {
                 + "<input type='hidden' name='form' value='average_resting_heart_rate'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         out.println("</body>");
