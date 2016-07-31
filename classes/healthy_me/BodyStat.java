@@ -44,20 +44,24 @@ public class BodyStat {
         this._date_x = _date_x;
     }
 
+    private String first_name;
+    private String last_name;
     private int _stat_id;
     private int _user_id;
     private float _height;
     private float _weight;
     private String _date_x;
 
-    public BodyStat(int _user_id, float _height, float _weight, String _date_x) {
+    public BodyStat(int _user_id, float _height, float _weight, String _date_x, String first_name, String last_name) {
         this._user_id = _user_id;
         this._height = _height;
         this._weight = _weight;
         this._date_x = _date_x;
+        this.first_name = first_name;
+        this.last_name = last_name;
     }
 
     public String toString() {
-        return String.format("body statistic: height=%s and weight=%s on %s for user_id %s", _height, _weight, _date_x, _user_id);
+        return String.format("body statistic: height=%s and weight=%s on %s for user %s %s", _height, _weight, _date_x, first_name, last_name);
     }
 }

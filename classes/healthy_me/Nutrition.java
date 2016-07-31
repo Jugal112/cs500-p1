@@ -4,13 +4,15 @@ package healthy_me;
  * Created by jugal on 7/30/2016.
  */
 public class Nutrition {
+    private String first_name;
+    private String last_name;
     private int _meal_id;
     private int _user_id;
     private String _food_name;
     private String _meal_type;
     private int _calories;
     private String _date_x;
-    
+
     public String get_date_x() {
         return _date_x;
     }
@@ -59,16 +61,18 @@ public class Nutrition {
         this._calories = _calories;
     }
 
-    public Nutrition(int _user_id, String _food_name, String _meal_type, int _calories, String _date_x) {
+    public Nutrition(int _user_id, String _food_name, String _meal_type, int _calories, String _date_x, String first_name, String last_name) {
         this._user_id = _user_id;
         this._food_name = _food_name;
         this._meal_type = _meal_type;
         this._calories = _calories;
         this._date_x = _date_x;
+        this.first_name = first_name;
+        this.last_name = last_name;
     }
 
     public String toString() {
-        return String.format("%s for %s with %s calories on %s for user_id %s", _food_name, _meal_type, _calories, _date_x, _user_id);
+        return String.format("%s for %s with %s calories on %s for user: %s %s", _food_name, _meal_type, _calories, _date_x, first_name, last_name);
     }
 
 }

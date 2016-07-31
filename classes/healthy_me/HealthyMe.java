@@ -90,7 +90,7 @@ public class HealthyMe {
             cp.set_date_x(req.getParameter("date_x"));
             cp.set_date_y(req.getParameter("date_y"));
 
-            if (action.equals("add")) {
+            if (action.equals("Add")) {
                 int user_id = DBUtils.getIntFromDB(_conn,
                         String.format(
                         "select user_id " +
@@ -110,7 +110,7 @@ public class HealthyMe {
                             req.getParameter("last_name"),
                             Integer.parseInt(req.getParameter("age"))
                     );
-                    registerUser(out, user, cp);
+                    registerUser(out, user);
                 }
                 else if (form.equals("nutrition")) {
                     Nutrition nutrition = new Nutrition(
@@ -118,18 +118,22 @@ public class HealthyMe {
                             req.getParameter("food_name"),
                             req.getParameter("meal_type"),
                             Integer.parseInt(req.getParameter("calories")),
-                            req.getParameter("date_x")
+                            req.getParameter("date_x"),
+                            cp.get_first_name(),
+                            cp.get_last_name()
                     );
-                    registerNutrition(out, nutrition, cp);
+                    registerNutrition(out, nutrition);
                 }
                 else if (form.equals("body_stats")) {
                     BodyStat bodyStat = new BodyStat(
                             user_id,
                             Float.parseFloat(req.getParameter("height")),
                             Float.parseFloat(req.getParameter("weight")),
-                            req.getParameter("date_x")
+                            req.getParameter("date_x"),
+                            cp.get_first_name(),
+                            cp.get_last_name()
                     );
-                    registerBodyStat(out, bodyStat, cp);
+                    registerBodyStat(out, bodyStat);
                 }
                 else if (form.equals("activities")) {
                     Activity activity = new Activity(
@@ -138,12 +142,14 @@ public class HealthyMe {
                             Integer.parseInt(req.getParameter("calories_burned")),
                             req.getParameter("date_x"),
                             req.getParameter("start_time"),
-                            req.getParameter("end_time")
+                            req.getParameter("end_time"),
+                            cp.get_first_name(),
+                            cp.get_last_name()
                     );
-                    registerActivity(out, activity, cp);
+                    registerActivity(out, activity);
                 }
             }
-            else if (action.equals("retrieve")) {
+            else if (action.equals("Retrieve")) {
                 switch (form) {
                     case "bmi":
                         printBMI(out, cp);
@@ -190,7 +196,7 @@ public class HealthyMe {
         }
     }
 
-    public User registerUser(PrintWriter out, User newUser, ConditionParameters cp) {
+    public User registerUser(PrintWriter out, User newUser) {
         try {
             int user_id = 1 + DBUtils.getIntFromDB(_conn, "select max(user_id) from Users");
             newUser.set_user_id(user_id);
@@ -209,7 +215,7 @@ public class HealthyMe {
         return newUser;
     }
 
-    public Nutrition registerNutrition(PrintWriter out, Nutrition newNutrition, ConditionParameters cp) {
+    public Nutrition registerNutrition(PrintWriter out, Nutrition newNutrition) {
         try {
             int meal_id = 1 + DBUtils.getIntFromDB(_conn, "select max(meal_id) from need_Nutrition");
             newNutrition.set_meal_id(meal_id);
@@ -229,7 +235,7 @@ public class HealthyMe {
         return newNutrition;
     }
 
-    public BodyStat registerBodyStat(PrintWriter out, BodyStat newBodystat, ConditionParameters cp) {
+    public BodyStat registerBodyStat(PrintWriter out, BodyStat newBodystat) {
         try {
             int stat_id = 1 + DBUtils.getIntFromDB(_conn, "select max(stat_id) from have_BodyStats");
             newBodystat.set_stat_id(stat_id);
@@ -248,7 +254,7 @@ public class HealthyMe {
         return newBodystat;
     }
 
-    public Activity registerActivity(PrintWriter out, Activity newActivity, ConditionParameters cp) {
+    public Activity registerActivity(PrintWriter out, Activity newActivity) {
         try {
             int activity_id = 1 + DBUtils.getIntFromDB(_conn, "select max(activity_id) from perform_Activities");
             newActivity.set_activity_id(activity_id);
