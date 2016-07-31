@@ -92,57 +92,82 @@ public class HealthyMe {
 
             if (action.equals("add")) {
                 if (form.equals("user")) {
-                        User user = new User(
-                                req.getParameter("first_name"),
-                                req.getParameter("last_name"),
-                                Integer.parseInt(req.getParameter("age"))
-                        );
-                        registerUser(user);
+                    User user = new User(
+                            req.getParameter("first_name"),
+                            req.getParameter("last_name"),
+                            Integer.parseInt(req.getParameter("age"))
+                    );
+                    registerUser(user);
                 }
                 else if (form.equals("nutrition")) {
-                        Nutrition nutrition = new Nutrition(
-                                Integer.parseInt(req.getParameter("user_id")),
-                                req.getParameter("food_name"),
-                                req.getParameter("meal_type"),
-                                Integer.parseInt(req.getParameter("calories")),
-                                req.getParameter("date_x")
-                        );
-                        registerNutrition(nutrition);
+                    Nutrition nutrition = new Nutrition(
+                            Integer.parseInt(req.getParameter("user_id")),
+                            req.getParameter("food_name"),
+                            req.getParameter("meal_type"),
+                            Integer.parseInt(req.getParameter("calories")),
+                            req.getParameter("date_x")
+                    );
+                    registerNutrition(nutrition);
                 }
                 else if (form.equals("body_stats")) {
-                        out.println("doin body stats");
-                        BodyStat bodyStat = new BodyStat(
-                                Integer.parseInt(req.getParameter("user_id")),
-                                Float.parseFloat(req.getParameter("height")),
-                                Float.parseFloat(req.getParameter("weight")),
-                                req.getParameter("date_x")
-                        );
-                        registerBodyStat(bodyStat);
+                    out.println("doin body stats");
+                    BodyStat bodyStat = new BodyStat(
+                            Integer.parseInt(req.getParameter("user_id")),
+                            Float.parseFloat(req.getParameter("height")),
+                            Float.parseFloat(req.getParameter("weight")),
+                            req.getParameter("date_x")
+                    );
+                    registerBodyStat(bodyStat);
                 }
                 else if (form.equals("activities")) {
-                        Activity activity = new Activity(
-                                Integer.parseInt(req.getParameter("user_id")),
-                                req.getParameter("name"),
-                                Integer.parseInt(req.getParameter("calories_burned")),
-                                req.getParameter("date_x"),
-                                req.getParameter("start_time"),
-                                req.getParameter("end_time")
-                        );
-                        registerActivity(activity);
+                    Activity activity = new Activity(
+                            Integer.parseInt(req.getParameter("user_id")),
+                            req.getParameter("name"),
+                            Integer.parseInt(req.getParameter("calories_burned")),
+                            req.getParameter("date_x"),
+                            req.getParameter("start_time"),
+                            req.getParameter("end_time")
+                    );
+                    registerActivity(activity);
                 }
             }
             else if (action.equals("retrieve")) {
-                if (form.equals("view_users")) {
-                    printUsers(out);
-                }
-                else if (form.equals("bmi")) {
-                    printBMI(out, cp);
-                }
-                else if (form.equals("weight_difference")) {
-                    printWeightChange(out, cp);
-                }
-                else if (form.equals("calorie_breakdown")) {
-                    printCaloriesBreakdown(out, cp);
+                switch (form) {
+                    case "bmi":
+                        printBMI(out, cp);
+                        break;
+                    case "weight_difference":
+                        printWeightChange(out, cp);
+                        break;
+                    case "calories_breakdown":
+                        printCaloriesBreakdown(out, cp);
+                        break;
+                    case "calories_consumed":
+                        printCaloriesConsumed(out, cp);
+                        break;
+                    case "calories_burned":
+                        printCaloriesBurned(out, cp);
+                        break;
+                    case "average_steps":
+                        printAvgSteps(out, cp);
+                        break;
+                    case "average_calories_burned":
+                        printAvgCaloriesBurned(out, cp);
+                        break;
+                    case "average_calories_consumed":
+                        printAvgCaloriesBurned(out, cp);
+                        break;
+                    case "max_hreat_rate":
+                        printMaxHeartRate(out, cp);
+                        break;
+                    case "average_sleep_heart_rate":
+                        printAvgSleepHeartRate(out, cp);
+                        break;
+                    case "average_resting_heart_rate":
+                        printAvgRestingHeartRate(out, cp);
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -251,7 +276,6 @@ public class HealthyMe {
         rs.close();
         st.close();
         out.println("<table>");
-
     }
 
     public void printBMI(PrintWriter out, ConditionParameters cp) throws SQLException {
@@ -260,16 +284,16 @@ public class HealthyMe {
         out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE", "BMI"));
         String optional_condition = "";
         if (cp.get_date_x()!=null && !cp.get_date_x().isEmpty()) {
-            optional_condition += String.format("and b.data_x = '%s'", cp.get_date_x());
+            optional_condition = String.format("and b.data_x = '%s'", cp.get_date_x());
         }
 
         String query = String.format(
                 "select u.first_name, u.last_name, b.date_x, round(b.weight/(b.height*b.height), 3) as BMI \n" +
-                "from users u, have_bodystats b \n" +
-                "where u.user_id = b.user_id \n" +
-                "and u.first_name='%s' \n" +
-                "and u.last_name='%s'\n" +
-                "%s;",
+                        "from users u, have_bodystats b \n" +
+                        "where u.user_id = b.user_id \n" +
+                        "and u.first_name='%s' \n" +
+                        "and u.last_name='%s'\n" +
+                        "%s;",
                 cp.get_first_name(),
                 cp.get_last_name(),
                 optional_condition
@@ -354,6 +378,295 @@ public class HealthyMe {
             out.println(toHTML(food_name, meal_type, calories));
         }
 
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printCaloriesConsumed(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Calories Consumed</h2>");
+        out.println("<table>");
+        String optional_condition = "";
+        if (cp.get_date_x()!=null && !cp.get_date_x().isEmpty()) {
+            optional_condition = String.format("and n.date_x = '%s'", cp.get_date_x());
+        }
+
+        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "TOTAL_CALORIES_CONSUMED"));
+        String query = String.format(
+                "select u.first_name, u.last_name, n.date_x, sum(n.calories) as total_calories_consumed \n" +
+                        "from users u, need_nutrition n \n" +
+                        "where u.user_id = n.user_id \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "%s \n" +
+                        "group by u.first_name, u.last_name, n.date_x;",
+                cp.get_first_name(),
+                cp.get_last_name(),
+                optional_condition
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            String first_name = rs.getString("first_name");
+            String last_name= rs.getString("last_name");
+            String date_x= rs.getString("date_x");
+            int total_calories_consumed = rs.getInt("total_calories_consumed");
+            out.println(toHTML(first_name, last_name, date_x, total_calories_consumed));
+        }
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printCaloriesBurned(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Calories Burned</h2>");
+        out.println("<table>");
+
+        String optional_condition = "";
+        if (cp.get_date_x()!=null && !cp.get_date_x().isEmpty()) {
+            optional_condition = String.format("and a.date_x = '%s'", cp.get_date_x());
+        }
+
+        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "TOTAL_CALORIES_BURNED"));
+        String query = String.format(
+                "select u.first_name, u.last_name, s.date_x, sum(a.calories_burned)+sum(s.calories_burned) as total_calories_burned \n" +
+                        "from users u, perform_activities a, walk_steps s \n" +
+                        "where u.user_id = a.activity_id\n" +
+                        "and u.user_id = s.step_id\n" +
+                        "and a.date_x = s.date_x \n" +
+                        "%s \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "group by u.first_name, u.last_name, s.date_x;",
+                optional_condition,
+                cp.get_first_name(),
+                cp.get_last_name()
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            String first_name = rs.getString("first_name");
+            String last_name= rs.getString("last_name");
+            String date_x= rs.getString("date_x");
+            int total_calories_consumed = rs.getInt("total_calories_burned");
+            out.println(toHTML(first_name, last_name, date_x, total_calories_consumed));
+        }
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printAvgSteps(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Average Steps</h2>");
+        out.println("<table>");
+
+        out.println(toHTML("AVG_STEPS"));
+        String query = String.format(
+                "select round(avg(s.num_steps), 2) as avg_steps \n" +
+                        "from users u, walk_steps s \n" +
+                        "where u.user_id = s.user_id \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "and s.date_x >= '%s' \n" +
+                        "and s.date_x <= '%s'; ",
+                cp.get_first_name(),
+                cp.get_last_name(),
+                cp.get_date_x(),
+                cp.get_date_y()
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            int avg_steps = rs.getInt("avg_steps");
+            out.println(toHTML(avg_steps));
+        }
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printAvgCaloriesBurned(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Average Calories Burned</h2>");
+        out.println("<table>");
+
+        out.println(toHTML("DATE_X", "AVG_CALORIES_BURNED"));
+        String query = String.format(
+                "select a.date_x, round(avg(a.calories_burned), 2) as avg_calories_burned \n" +
+                        "from users u, perform_activities a \n" +
+                        "where u.user_id = a.user_id \n" +
+                        "and a.date_x >= '%s' \n" +
+                        "and a.date_x <= '%s' \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "group by a.date_x\n" +
+                        "order by a.date_x;",
+                cp.get_date_x(),
+                cp.get_date_y(),
+                cp.get_first_name(),
+                cp.get_last_name()
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            String date_x = rs.getString("date_x");
+            int avg_calories_burned = rs.getInt("avg_calories_burned");
+            out.println(toHTML(date_x, avg_calories_burned));
+        }
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printAvgCaloriesConsumed(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Average Calories Per Meal</h2>");
+        out.println("<table>");
+
+        out.println(toHTML("DATE_X", "AVG_CALORIES_PER_MEAL", "NUM_MEALS"));
+        String query = String.format(
+                "select n.date_x, round(avg(n.calories), 2) as avg_calories_per_meal, count(n.user_id) as num_meals \n" +
+                        "from users u, need_nutrition n \n" +
+                        "where u.user_id = n.user_id \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "and n.date_x >= '%s' \n" +
+                        "and n.date_x <= '%s' \n" +
+                        "group by n.date_x\n" +
+                        "order by n.date_x; ",
+                cp.get_first_name(),
+                cp.get_last_name(),
+                cp.get_date_x(),
+                cp.get_date_y()
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            String date_x = rs.getString("date_x");
+            int avg_calories_per_meal = rs.getInt("avg_calories_per_meal");
+            int num_meals = rs.getInt("num_meals");
+            out.println(toHTML(date_x, avg_calories_per_meal, num_meals));
+        }
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printMaxHeartRate(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Maximum Active Heart Rate Per Day</h2>");
+        out.println("<table>");
+
+        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "START_TIME", "END_TIME", "MAX_HEART_RATE"));
+        String query = String.format(
+                "select u.first_name, u.last_name, h.date_x, a.start_time, a.end_time, max(h.heart_rate) as max_heart_rate \n" +
+                        "from users u, have_heartrate h, perform_activities a \n" +
+                        "where u.user_id = h.user_id \n" +
+                        "and u.user_id = a.user_id \n" +
+                        "and a.date_x = h.date_x \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "and h.date_x >= '%s' \n" +
+                        "and h.date_x <= '%s' \n" +
+                        "and h.start_time >= a.start_time \n" +
+                        "and h.end_time <= a.end_time \n" +
+                        "group by u.first_name, u.last_name, h.date_x, a.start_time, a.end_time\n" +
+                        "order by h.date_x;",
+                cp.get_first_name(),
+                cp.get_last_name(),
+                cp.get_date_x(),
+                cp.get_date_y()
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            String first_name = rs.getString("first_name");
+            String last_name = rs.getString("last_name");
+            String date_x = rs.getString("date_x");
+            String start_time = rs.getString("start_time");
+            String end_time = rs.getString("end_time");
+            int max_heart_rate = rs.getInt("max_heart_rate");
+            out.println(toHTML(first_name, last_name, date_x, start_time, end_time, max_heart_rate));
+        }
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printAvgSleepHeartRate(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Average Heart Rate During Sleep</h2>");
+        out.println("<table>");
+
+        out.println(toHTML("DATE_X", "START_TIME", "END_TIME", "AVG_HEART_RATE"));
+        String query = String.format(
+                "select h.date_x, s.start_time, s.end_time, round(avg(h.heart_rate), 2) as avg_heart_rate \n" +
+                        "from users u, have_heartrate h, need_sleep s\n" +
+                        "where u.user_id = h.user_id \n" +
+                        "and u.user_id = s.user_id \n" +
+                        "and s.date_x = h.date_x \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "and h.date_x >= '%s' \n" +
+                        "and h.date_x <= '%s' \n" +
+                        "and h.start_time >= s.start_time \n" +
+                        "and h.end_time <= s.end_time \n" +
+                        "group by u.first_name, u.last_name, h.date_x, s.start_time, s.end_time\n" +
+                        "order by h.date_x;",
+                cp.get_first_name(),
+                cp.get_last_name(),
+                cp.get_date_x(),
+                cp.get_date_y()
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            String date_x = rs.getString("date_x");
+            String start_time = rs.getString("start_time");
+            String end_time = rs.getString("end_time");
+            int avg_heart_rate = rs.getInt("avg_heart_rate");
+            out.println(toHTML(date_x, start_time, end_time, avg_heart_rate));
+        }
+        rs.close();
+        st.close();
+        out.println("<table>");
+    }
+
+    public void printAvgRestingHeartRate(PrintWriter out, ConditionParameters cp) throws SQLException {
+        out.println("<h2>Average Resting Heart Rate Per Day</h2>");
+        out.println("<table>");
+
+        out.println(toHTML("DATE_X", "AVG_RESTING_HEART_RATE"));
+        String query = String.format(
+                "select h.date_x, round(avg(h.heart_rate), 2) as resting_heart_rate \n" +
+                        "from users u, have_heartrate h \n" +
+                        "where u.user_id = h.user_id \n" +
+                        "and u.first_name = '%s' \n" +
+                        "and u.last_name = '%s' \n" +
+                        "group by h.date_x \n" +
+                        "order by h.date_x;",
+                cp.get_first_name(),
+                cp.get_last_name()
+        );
+
+        Statement st = _conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()) {
+            String date_x = rs.getString("date_x");
+            int resting_heart_rate = rs.getInt("resting_heart_rate");
+            out.println(toHTML(date_x, resting_heart_rate));
+        }
         rs.close();
         st.close();
         out.println("<table>");
