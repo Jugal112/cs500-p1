@@ -21,7 +21,7 @@ public class HealthyMeServlet extends HttpServlet {
         //_healthyme.executeForm(req);
         out.println("<!DOCTYPE html><html>");
         out.println("<head>" +
-                "<title>Healthy Me</title>" +
+                "<title>HealthyMe</title>" +
                 "</head>");
         out.println("<body>");
         out.println("<h1>Healthy Me</h1>");
@@ -35,43 +35,43 @@ public class HealthyMeServlet extends HttpServlet {
 
         //Personal Information
         out.println("<form>"
-                + "<h2>Add User</h2>"
+                + "<h2>1. Add User</h2>"
                 + "<input type='hidden' name='form' value='user'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Age: <input type='number' name='age'><br>"
-                + "<input type='submit' name='action' value='add'>"
+                + "<input type='submit' name='action' value='Add'>"
                 + "</form><br>");
 
         //Body Stats
         out.println("<form>"
-                + "<h2>Add Body Statistic</h2>"
+                + "<h2>2. Add Body Statistics</h2>"
                 + "<input type='hidden' name='form' value='body_stats'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Height: <input type='number' step='any' name='height'>meters<br>"
                 + "Weight: <input type='number' step='any' name='weight'>kilograms<br>"
                 + "Date: <input type='date' name='date_x'><br>"
-                + "<input type='submit' name='action' value='add'>"
+                + "<input type='submit' name='action' value='Add'>"
                 + "</form><br>");
 
         //Activities
         out.println("<form>"
-                + "<h2>Add Activity</h2>"
+                + "<h2>3. Add Activity</h2>"
                 + "<input type='hidden' name='form' value='activities'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Exercise Name: <input type='text' name='name'><br>"
-                + "Calories Burned: <input type='number' name='calories_burned'>cal(s)<br>"
+                + "Calories Burned: <input type='number' name='calories_burned'>kcal<br>"
                 + "Date: <input type='date' name='date_x'><br>"
                 + "Start Time: <input type='time' name='start_time'><br>"
                 + "End Time: <input type='time' name='end_time'><br>"
-                + "<input type='submit' name='action' value='add'>"
+                + "<input type='submit' name='action' value='Add'>"
                 + "</form><br>");
 
         //Nutrition
         out.println("<form>"
-                + "<h2>Add Nutrition</h2>"
+                + "<h2>4. Add Nutrition</h2>"
                 + "<input type='hidden' name='form' value='nutrition'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
@@ -80,110 +80,111 @@ public class HealthyMeServlet extends HttpServlet {
                 + "<option value=breakfast>Breakfast</option>"
                 + "<option value=lunch>Lunch</option>"
                 + "<option value=dinner>Dinner</option>"
+                + "<option value=snack>Snack</option>"
                 + "</select><br>"
-                + "Calories: <input type='number' name='calories'>cal(s)<br>"
+                + "Calories: <input type='number' name='calories'>kcal<br>"
                 + "Date: <input type='date' name='date_x'><br>"
-                + "<input type='submit' name='action' value='add'>"
+                + "<input type='submit' name='action' value='Add'>"
                 + "</form><br>");
 
         //BMI
         out.println("<form>"
-                + "<h2>Look at BMI Stats</h2>"
+                + "<h2>5. Calculate BMI</h2>"
                 + "<input type='hidden' name='form' value='bmi'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date (optional): <input type='date' name='date_x'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Difference in Weight
         out.println("<form>"
-                + "<h2>Look at Weight Change</h2>"
+                + "<h2>6. Determine Change in Weight</h2>"
                 + "<input type='hidden' name='form' value='weight_difference'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date: <input type='date' name='date_x'><br>"
                 + "Date: <input type='date' name='date_y'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Calories Breakdown
         out.println("<form>"
-                + "<h2>Look at Breakdown of Calories</h2>"
+                + "<h2>7. Calorie Breakdown by Date</h2>"
                 + "<input type='hidden' name='form' value='calories_breakdown'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date: <input type='date' name='date_x'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Calories Consumed
         out.println("<form>"
-                + "<h2>Look at Calories Consumed Per Day</h2>"
+                + "<h2>8. Total Calories Consumed</h2>"
                 + "<input type='hidden' name='form' value='calories_consumed'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date (optional): <input type='date' name='date_x'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Calories Burned
         out.println("<form>"
-                + "<h2>Look at Calories Burned Per Day</h2>"
+                + "<h2>9. Total Calories Burned</h2>"
                 + "<input type='hidden' name='form' value='calories_burned'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date (optional): <input type='date' name='date_x'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Average Steps
         out.println("<form>"
-                + "<h2>Look at Average Daily Steps between Dates</h2>"
+                + "<h2>10. Average Steps Walked Per Day</h2>"
                 + "<input type='hidden' name='form' value='average_steps'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date From: <input type='date' name='date_x'><br>"
                 + "Date To: <input type='date' name='date_y'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Average Calories Burned
         out.println("<form>"
-                + "<h2>Look at Average Calories Burned between Dates</h2>"
+                + "<h2>11. Average Calories Burned Per Day</h2>"
                 + "<input type='hidden' name='form' value='average_calories_burned'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date From: <input type='date' name='date_x'><br>"
                 + "Date To: <input type='date' name='date_y'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Average Calories Consumed
         out.println("<form>"
-                + "<h2>Look at Average Calories Consumed Per Meal between Dates</h2>"
+                + "<h2>12. Average Calories Consumed Per Meal</h2>"
                 + "<input type='hidden' name='form' value='average_calories_consumed'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date From: <input type='date' name='date_x'><br>"
                 + "Date To: <input type='date' name='date_y'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Max Heart Rate
         out.println("<form>"
-                + "<h2>Look at Maximum Heart Rate between Dates</h2>"
+                + "<h2>13. Maximum Heart Rate During Activity</h2>"
                 + "<input type='hidden' name='form' value='max_heart_rate'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
                 + "Date From: <input type='date' name='date_x'><br>"
                 + "Date To: <input type='date' name='date_y'><br>"
-                + "<input type='submit' name='action' value='retrieve'>"
+                + "<input type='submit' name='action' value='Retrieve'>"
                 + "</form><br>");
 
         //Average Sleep Heart Rate
         out.println("<form>"
-                + "<h2>Look at Average Heart Rate during Sleep between Dates</h2>"
+                + "<h2>14. Average Heart Rate During periods of Sleep</h2>"
                 + "<input type='hidden' name='form' value='average_sleep_heart_rate'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
@@ -194,7 +195,7 @@ public class HealthyMeServlet extends HttpServlet {
 
         //Average Resting Heart Rate
         out.println("<form>"
-                + "<h2>Look at Average Resting Heart Rate</h2>"
+                + "<h2>15. Resting Heart Rate</h2>"
                 + "<input type='hidden' name='form' value='average_resting_heart_rate'>"
                 + "First Name: <input type='text' name='first_name'><br>"
                 + "Last Name: <input type='text' name='last_name'><br>"
