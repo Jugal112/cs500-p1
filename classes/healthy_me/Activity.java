@@ -5,7 +5,6 @@ package healthy_me;
  */
 public class Activity {
     private int _activity_id;
-
     private int _user_id;
     private String _name;
     private int _calories_burned;
@@ -79,7 +78,7 @@ public class Activity {
     }
 
     public String toString() {
-        return String.format("%s:%s,%s,%s,%s,%s", _activity_id, _user_id, _calories_burned, _date_x, _start_time, _end_time);
+        return String.format("%s burned %s calories on %s from %s to %s for user_id %s", _name, _calories_burned, _date_x, _start_time, _end_time, _user_id);
     }
 
     public String toHTML() {

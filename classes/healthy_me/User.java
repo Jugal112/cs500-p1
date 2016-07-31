@@ -53,7 +53,7 @@ public class User {
     }
 
     public String toString() {
-        return String.format("%s:%s,%s,%s", _user_id, _first_name, _last_name, _age);
+        return String.format("%s %s age %s with user_id %s", _first_name, _last_name, _age, _user_id);
     }
 
     public String toHTML() {

@@ -57,4 +57,7 @@ public class BodyStat {
         this._date_x = _date_x;
     }
 
+    public String toString() {
+        return String.format("body statistic: height=%s and weight=%s on %s for user_id %s", _height, _weight, _date_x, _user_id);
+    }
 }

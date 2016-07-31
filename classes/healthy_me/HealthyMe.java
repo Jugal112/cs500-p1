@@ -91,44 +91,56 @@ public class HealthyMe {
             cp.set_date_y(req.getParameter("date_y"));
 
             if (action.equals("add")) {
-                if (form.equals("user")) {
+                int user_id = DBUtils.getIntFromDB(_conn,
+                        String.format(
+                        "select user_id " +
+                                "from users u " +
+                                "where u.first_name = '%s' " +
+                                "and u.last_name = '%s';",
+                                cp.get_first_name(),
+                                cp.get_last_name()
+                        )
+                );
+                if (user_id<0) {
+                    out.println("that user does not exist.");
+                }
+                else if (form.equals("user")) {
                     User user = new User(
                             req.getParameter("first_name"),
                             req.getParameter("last_name"),
                             Integer.parseInt(req.getParameter("age"))
                     );
-                    registerUser(user);
+                    registerUser(out, user, cp);
                 }
                 else if (form.equals("nutrition")) {
                     Nutrition nutrition = new Nutrition(
-                            Integer.parseInt(req.getParameter("user_id")),
+                            user_id,
                             req.getParameter("food_name"),
                             req.getParameter("meal_type"),
                             Integer.parseInt(req.getParameter("calories")),
                             req.getParameter("date_x")
                     );
-                    registerNutrition(nutrition);
+                    registerNutrition(out, nutrition, cp);
                 }
                 else if (form.equals("body_stats")) {
-                    out.println("doin body stats");
                     BodyStat bodyStat = new BodyStat(
-                            Integer.parseInt(req.getParameter("user_id")),
+                            user_id,
                             Float.parseFloat(req.getParameter("height")),
                             Float.parseFloat(req.getParameter("weight")),
                             req.getParameter("date_x")
                     );
-                    registerBodyStat(bodyStat);
+                    registerBodyStat(out, bodyStat, cp);
                 }
                 else if (form.equals("activities")) {
                     Activity activity = new Activity(
-                            Integer.parseInt(req.getParameter("user_id")),
+                            user_id,
                             req.getParameter("name"),
                             Integer.parseInt(req.getParameter("calories_burned")),
                             req.getParameter("date_x"),
                             req.getParameter("start_time"),
                             req.getParameter("end_time")
                     );
-                    registerActivity(activity);
+                    registerActivity(out, activity, cp);
                 }
             }
             else if (action.equals("retrieve")) {
@@ -174,10 +186,11 @@ public class HealthyMe {
         } catch (Exception e) {
             e.printStackTrace();
             out.println("Looks like something went wrong :(");
+            out.println(e);
         }
     }
 
-    public User registerUser(User newUser) {
+    public User registerUser(PrintWriter out, User newUser, ConditionParameters cp) {
         try {
             int user_id = 1 + DBUtils.getIntFromDB(_conn, "select max(user_id) from Users");
             newUser.set_user_id(user_id);
@@ -188,13 +201,15 @@ public class HealthyMe {
                     newUser.get_age()
             );
             DBUtils.executeUpdate(_conn, query);
+            out.println(String.format("added %s", newUser.toString()));
         } catch (SQLException sqle) {
             sqle.printStackTrace(System.err);
+            out.println("User already exists or invalid input.");
         }
         return newUser;
     }
 
-    public Nutrition registerNutrition(Nutrition newNutrition) {
+    public Nutrition registerNutrition(PrintWriter out, Nutrition newNutrition, ConditionParameters cp) {
         try {
             int meal_id = 1 + DBUtils.getIntFromDB(_conn, "select max(meal_id) from need_Nutrition");
             newNutrition.set_meal_id(meal_id);
@@ -207,13 +222,14 @@ public class HealthyMe {
                     newNutrition.get_date_x()
             );
             DBUtils.executeUpdate(_conn, query);
+            out.println(String.format("added %s", newNutrition.toString()));
         } catch (SQLException sqle) {
             sqle.printStackTrace(System.err);
         }
         return newNutrition;
     }
 
-    public BodyStat registerBodyStat(BodyStat newBodystat) {
+    public BodyStat registerBodyStat(PrintWriter out, BodyStat newBodystat, ConditionParameters cp) {
         try {
             int stat_id = 1 + DBUtils.getIntFromDB(_conn, "select max(stat_id) from have_BodyStats");
             newBodystat.set_stat_id(stat_id);
@@ -225,13 +241,14 @@ public class HealthyMe {
                     newBodystat.get_date_x()
             );
             DBUtils.executeUpdate(_conn, query);
+            out.println(String.format("added %s", newBodystat.toString()));
         } catch (SQLException sqle) {
             sqle.printStackTrace(System.err);
         }
         return newBodystat;
     }
 
-    public Activity registerActivity(Activity newActivity) {
+    public Activity registerActivity(PrintWriter out, Activity newActivity, ConditionParameters cp) {
         try {
             int activity_id = 1 + DBUtils.getIntFromDB(_conn, "select max(activity_id) from perform_Activities");
             newActivity.set_activity_id(activity_id);
@@ -245,6 +262,7 @@ public class HealthyMe {
                     newActivity.get_end_time()
             );
             DBUtils.executeUpdate(_conn, query);
+            out.println(String.format("added %s", newActivity.toString()));
         } catch (SQLException sqle) {
             sqle.printStackTrace(System.err);
         }
@@ -282,9 +300,10 @@ public class HealthyMe {
         out.println("<h2>BMI</h2>");
         out.println("<table>");
         out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE", "BMI"));
+
         String optional_condition = "";
         if (cp.get_date_x()!=null && !cp.get_date_x().isEmpty()) {
-            optional_condition = String.format("and b.data_x = '%s'", cp.get_date_x());
+            optional_condition = String.format("and b.date_x = '%s'", cp.get_date_x());
         }
 
         String query = String.format(

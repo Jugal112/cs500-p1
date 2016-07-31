@@ -9,7 +9,8 @@ public class Nutrition {
     private String _food_name;
     private String _meal_type;
     private int _calories;
-
+    private String _date_x;
+    
     public String get_date_x() {
         return _date_x;
     }
@@ -17,8 +18,6 @@ public class Nutrition {
     public void set_date_x(String _date_x) {
         this._date_x = _date_x;
     }
-
-    private String _date_x;
 
     public int get_meal_id() {
         return _meal_id;
@@ -68,6 +67,8 @@ public class Nutrition {
         this._date_x = _date_x;
     }
 
-
+    public String toString() {
+        return String.format("%s for %s with %s calories on %s for user_id %s", _food_name, _meal_type, _calories, _date_x, _user_id);
+    }
 
 }

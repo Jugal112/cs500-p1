@@ -20,7 +20,9 @@ public class HealthyMeServlet extends HttpServlet {
         PrintWriter out = res.getWriter();
         //_healthyme.executeForm(req);
         out.println("<!DOCTYPE html><html>");
-        out.println("<head><title>Healthy Me</title></head>");
+        out.println("<head>" +
+                "<title>Healthy Me</title>" +
+                "</head>");
         out.println("<body>");
         out.println("<h1>Healthy Me</h1>");
         if (!_message.startsWith("Servus")) {
@@ -43,11 +45,12 @@ public class HealthyMeServlet extends HttpServlet {
 
         //Body Stats
         out.println("<form>"
-                + "<h2>Add Body Stat</h2>"
+                + "<h2>Add Body Statistic</h2>"
                 + "<input type='hidden' name='form' value='body_stats'>"
-                + "User ID: <input type='number' name='user_id'><br>"
-                + "Height: <input type='number' step='any' name='height'>inches<br>"
-                + "Weight: <input type='number' step='any' name='weight'>lbs<br>"
+                + "First Name: <input type='text' name='first_name'><br>"
+                + "Last Name: <input type='text' name='last_name'><br>"
+                + "Height: <input type='number' step='any' name='height'>meters<br>"
+                + "Weight: <input type='number' step='any' name='weight'>kilograms<br>"
                 + "Date: <input type='date' name='date_x'><br>"
                 + "<input type='submit' name='action' value='add'>"
                 + "</form><br>");
@@ -56,7 +59,8 @@ public class HealthyMeServlet extends HttpServlet {
         out.println("<form>"
                 + "<h2>Add Activity</h2>"
                 + "<input type='hidden' name='form' value='activities'>"
-                + "User ID: <input type='number' name='user_id'><br>"
+                + "First Name: <input type='text' name='first_name'><br>"
+                + "Last Name: <input type='text' name='last_name'><br>"
                 + "Exercise Name: <input type='text' name='name'><br>"
                 + "Calories Burned: <input type='number' name='calories_burned'>cal(s)<br>"
                 + "Date: <input type='date' name='date_x'><br>"
@@ -69,7 +73,8 @@ public class HealthyMeServlet extends HttpServlet {
         out.println("<form>"
                 + "<h2>Add Nutrition</h2>"
                 + "<input type='hidden' name='form' value='nutrition'>"
-                + "User ID: <input type='number' name='user_id'><br>"
+                + "First Name: <input type='text' name='first_name'><br>"
+                + "Last Name: <input type='text' name='last_name'><br>"
                 + "Food Name: <input type='text' name='food_name'><br>"
                 + "Meal Type: <select name='meal_type'>"
                 + "<option value=breakfast>Breakfast</option>"
