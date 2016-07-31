@@ -98,5 +98,5 @@ insert into need_Nutrition values (18, 1, 'French Toast with Nutella', 'lunch', 
 insert into need_Nutrition values (19, 1, 'Rice and Potatoes', 'dinner', 595, '2016-07-08');
 
 -- Heart Rate
--- Average heart rate per hour per day per user. Values for 2 users over 5 days (i.e. 120 hours).
+-- Average heart rate per hour per day per user. Values for 2 users over 5 days (i.e. 120 hours). 240 entries.
 \copy have_HeartRate(hr_id, user_id, heart_rate, date_x, start_time, end_time) from 'HeartRateData.csv' with CSV;
