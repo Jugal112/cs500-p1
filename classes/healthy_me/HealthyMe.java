@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javax.servlet.http.*;
@@ -81,118 +83,133 @@ public class HealthyMe {
      */
     public void executeForm(HttpServletRequest req, PrintWriter out) {
         try {
-            String form = req.getParameter("form");
-            String action = req.getParameter("action");
+            String form = req.getParameter("form").trim();
+            String action = req.getParameter("action").trim();
 
             ConditionParameters cp = new ConditionParameters();
-            cp.set_first_name(req.getParameter("first_name"));
-            cp.set_last_name(req.getParameter("last_name"));
-            cp.set_date_x(req.getParameter("date_x"));
-            cp.set_date_y(req.getParameter("date_y"));
-
-            if (action.equals("Add")) {
-                int user_id = DBUtils.getIntFromDB(_conn,
-                        String.format(
-                        "select user_id " +
-                                "from users u " +
-                                "where u.first_name = '%s' " +
-                                "and u.last_name = '%s';",
+            cp.set_first_name(req.getParameter("first_name").trim());
+            cp.set_last_name(req.getParameter("last_name").trim());
+            if (req.getParameter("date_x")!=null && isValidDate(req.getParameter("date_x").trim())) {
+                cp.set_date_x(req.getParameter("date_x").trim());
+            }
+            if (req.getParameter("date_y")!=null && isValidDate(req.getParameter("date_y").trim())) {
+                cp.set_date_y(req.getParameter("date_y").trim());
+            }
+            int user_id = DBUtils.getIntFromDB(_conn,
+                    String.format(
+                            "select user_id " +
+                                    "from users u " +
+                                    "where u.first_name = '%s' " +
+                                    "and u.last_name = '%s';",
+                            cp.get_first_name(),
+                            cp.get_last_name()
+                    )
+            );
+            if (user_id<0) {
+                out.println("that user does not exist.");
+            }
+            else {
+                if (action.equals("Add")) {
+                    if (form.equals("user")) {
+                        User user = new User(
+                                cp.get_first_name(),
+                                cp.get_last_name(),
+                                Integer.parseInt(req.getParameter("age"))
+                        );
+                        registerUser(out, user);
+                    }
+                    else if (form.equals("nutrition")) {
+                        Nutrition nutrition = new Nutrition(
+                                user_id,
+                                req.getParameter("food_name").trim(),
+                                req.getParameter("meal_type").trim(),
+                                Integer.parseInt(req.getParameter("calories")),
+                                cp.get_date_x(),
                                 cp.get_first_name(),
                                 cp.get_last_name()
-                        )
-                );
-                if (user_id<0) {
-                    out.println("that user does not exist.");
+                        );
+                        registerNutrition(out, nutrition);
+                    }
+                    else if (form.equals("body_stats")) {
+                        BodyStat bodyStat = new BodyStat(
+                                user_id,
+                                Float.parseFloat(req.getParameter("height").trim()),
+                                Float.parseFloat(req.getParameter("weight").trim()),
+                                cp.get_date_x(),
+                                cp.get_first_name(),
+                                cp.get_last_name()
+                        );
+                        registerBodyStat(out, bodyStat);
+                    }
+                    else if (form.equals("activities")) {
+                        if (isValidTime(req.getParameter("start_time").trim()) && isValidTime(req.getParameter("end_time").trim())) {
+                            Activity activity = new Activity(
+                                    user_id,
+                                    req.getParameter("name").trim(),
+                                    Integer.parseInt(req.getParameter("calories_burned").trim()),
+                                    req.getParameter("date_x").trim(),
+                                    req.getParameter("start_time").trim(),
+                                    req.getParameter("end_time").trim(),
+                                    cp.get_first_name(),
+                                    cp.get_last_name()
+                            );
+                            registerActivity(out, activity);
+                        }
+                    }
                 }
-                else if (form.equals("user")) {
-                    User user = new User(
-                            req.getParameter("first_name"),
-                            req.getParameter("last_name"),
-                            Integer.parseInt(req.getParameter("age"))
-                    );
-                    registerUser(out, user);
-                }
-                else if (form.equals("nutrition")) {
-                    Nutrition nutrition = new Nutrition(
-                            user_id,
-                            req.getParameter("food_name"),
-                            req.getParameter("meal_type"),
-                            Integer.parseInt(req.getParameter("calories")),
-                            req.getParameter("date_x"),
-                            cp.get_first_name(),
-                            cp.get_last_name()
-                    );
-                    registerNutrition(out, nutrition);
-                }
-                else if (form.equals("body_stats")) {
-                    BodyStat bodyStat = new BodyStat(
-                            user_id,
-                            Float.parseFloat(req.getParameter("height")),
-                            Float.parseFloat(req.getParameter("weight")),
-                            req.getParameter("date_x"),
-                            cp.get_first_name(),
-                            cp.get_last_name()
-                    );
-                    registerBodyStat(out, bodyStat);
-                }
-                else if (form.equals("activities")) {
-                    Activity activity = new Activity(
-                            user_id,
-                            req.getParameter("name"),
-                            Integer.parseInt(req.getParameter("calories_burned")),
-                            req.getParameter("date_x"),
-                            req.getParameter("start_time"),
-                            req.getParameter("end_time"),
-                            cp.get_first_name(),
-                            cp.get_last_name()
-                    );
-                    registerActivity(out, activity);
-                }
-            }
-            else if (action.equals("Retrieve")) {
-                switch (form) {
-                    case "bmi":
-                        printBMI(out, cp);
-                        break;
-                    case "weight_difference":
-                        printWeightChange(out, cp);
-                        break;
-                    case "calories_breakdown":
-                        printCaloriesBreakdown(out, cp);
-                        break;
-                    case "calories_consumed":
-                        printCaloriesConsumed(out, cp);
-                        break;
-                    case "calories_burned":
-                        printCaloriesBurned(out, cp);
-                        break;
-                    case "average_steps":
-                        printAvgSteps(out, cp);
-                        break;
-                    case "average_calories_burned":
-                        printAvgCaloriesBurned(out, cp);
-                        break;
-                    case "average_calories_consumed":
-                        printAvgCaloriesBurned(out, cp);
-                        break;
-                    case "max_hreat_rate":
-                        printMaxHeartRate(out, cp);
-                        break;
-                    case "average_sleep_heart_rate":
-                        printAvgSleepHeartRate(out, cp);
-                        break;
-                    case "average_resting_heart_rate":
-                        printAvgRestingHeartRate(out, cp);
-                        break;
-                    default:
-                        break;
+                else if (action.equals("Retrieve")) {
+                    switch (form) {
+                        case "bmi":
+                            printBMI(out, cp);
+                            break;
+                        case "weight_difference":
+                            printWeightChange(out, cp);
+                            break;
+                        case "calories_breakdown":
+                            printCaloriesBreakdown(out, cp);
+                            break;
+                        case "calories_consumed":
+                            printCaloriesConsumed(out, cp);
+                            break;
+                        case "calories_burned":
+                            printCaloriesBurned(out, cp);
+                            break;
+                        case "average_steps":
+                            printAvgSteps(out, cp);
+                            break;
+                        case "average_calories_burned":
+                            printAvgCaloriesBurned(out, cp);
+                            break;
+                        case "average_calories_consumed":
+                            printAvgCaloriesConsumed(out, cp);
+                            break;
+                        case "max_heart_rate":
+                            printMaxHeartRate(out, cp);
+                            break;
+                        case "average_sleep_heart_rate":
+                            printAvgSleepHeartRate(out, cp);
+                            break;
+                        case "average_resting_heart_rate":
+                            printAvgRestingHeartRate(out, cp);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 
+        } catch (ParseException pe) {
+            pe.printStackTrace();
+            out.println("Your date(s) are in the wrong format.  It should be in yyyy-MM-dd");
+            if (pe.getMessage().equals("TimeParseException")) {
+                out.println("One of your time inputs is incorrect.  it should follow the format HH:mm such as 14:52");
+            }
+            else if (pe.getMessage().equals("DateParseException")) {
+                out.println("One of your date inputs is incorrect.  it should follow the format yyyy-MM-dd such as 2016-12-31");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            out.println("Looks like something went wrong :(");
-            out.println(e);
+            out.println("You may have entered something incorrectly. Be sure to follow the examples provided.");
         }
     }
 
@@ -697,6 +714,30 @@ public class HealthyMe {
         out.println("<table>");
     }
 
+    public static boolean isValidTime(String inTime) throws Exception {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        timeFormat.setLenient(false);
+        try {
+            timeFormat.parse(inTime.trim());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new Exception("TimeParseException", e);
+        }
+        return true;
+    }
+
+    public static boolean isValidDate(String inDate) throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(inDate.trim());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new Exception("DateParseException", e);
+        }
+        return true;
+    }
+
     public String toHTML(Object... objects) {
         String html = "<tr>";
         for (int i=0; i< objects.length; i++) {
@@ -705,130 +746,4 @@ public class HealthyMe {
         html += "</tr>";
         return html;
     }
-
-    /**
-     * Get the complete roster of students.
-     * @return
-     */
-//    public ArrayList<User> getRoster() throws SQLException {
-//
-//        ArrayList<User> roster = new ArrayList<User>();
-//
-//        String query = "select * from Users";
-//
-//        Statement st = _conn.createStatement();
-//        ResultSet rs = st.executeQuery(query);
-//
-//        while (rs.next()) {
-//
-//            int user_id = rs.getInt("user_id");
-//            String first_name = rs.getString("first_name");
-//            String last_name = rs.getString("last_name");
-//            int age = rs.getInt("age");
-//            User user = new User(first_name, last_name, age);
-//            user.set_user_id(user_id);
-//
-//            roster.add(user);
-//        }
-//
-//        rs.close();
-//        st.close();
-//
-//        return roster;
-//
-//    }
-//
-//    /**
-//     * Update the student's GPA in the database.
-//     * @param sid
-//     * @param gpa
-//     * @return
-//     */
-//
-//    public void setGPA(int sid, double gpa) {
-//        User user = null;
-//        try {
-//            int cnt = DBUtils.getIntFromDB(_conn, "select count(*) from Students where sid = " + sid);
-//            if (cnt == 0) {
-//                //return user;
-//            }
-//            String query = "update Students set gpa = " + gpa + " where sid = " + sid;
-//            DBUtils.executeUpdate(_conn, query);
-//
-//            query = "select name, gpa from Students where sid = " + sid;
-//            Statement st = _conn.createStatement();
-//            ResultSet rs = st.executeQuery(query);
-//            rs.next();
-//
-//            //user = new User(sid, rs.getString("name"), rs.getDouble("gpa"));
-//
-//            rs.close();
-//            st.close();
-//        } catch (SQLException sqle) {
-//            sqle.printStackTrace(System.err);
-//        }
-//        //return user;
-//    }
-
-//    public void addTermsDynamicSQL(String [] terms) {
-//        for (int i=0; i<terms.length; i++) {
-//            String term = terms[i];
-//            try {
-//                String query = "insert into Terms values ('" + term + "')";
-//                DBUtils.executeUpdate(_conn, query);
-//            } catch (SQLException sqle) {
-//                System.out.println("Insert into Terms failed for " + term);
-//            }
-//        }
-//    }
-//
-//    public void addTermsPreparedStatement(String [] terms) {
-//        try {
-//            String query = "insert into Terms values ( ? )";
-//            DBUtils.executeUpdate(_conn, query, terms);
-//        } catch (SQLException sqle) {
-//            System.out.println(sqle.toString());
-//        }
-//    }
-//
-//    public static void main (String args[]) {
-//
-//        if (args.length != 1) {
-//            System.out.println("Not enough arguments: Registrar bundle");
-//        }
-//
-//        Registrar reg = new Registrar();
-//        try {
-//
-//            String response = reg.openDBConnection(args[0].trim());
-//
-//            System.out.println(response);
-//
-//            Student newStudent = reg.registerStudent(new Student("Julia"));
-//            System.out.println("\nRegistered a new student: " + newStudent.toString());
-//
-//            newStudent = reg.setGPA(newStudent.getId(), 3.9);
-//            System.out.println("\nUpdated GPA for student: " + newStudent.toString());
-//
-//            ArrayList<Student> roster = reg.getRoster();
-//
-//            System.out.println("\nPrinting the roster");
-//            for (Student student : roster) {
-//                System.out.println(student.toString());
-//            }
-//
-//            String [] terms = {"Summer 2010", "Fall 2010", "Spring 2011", "Summer 2011"};
-//            reg.addTermsDynamicSQL(terms);
-//
-//            String [] moreTerms = {"Summer 2012", "Fall 2012"};
-//            reg.addTermsPreparedStatement(moreTerms);
-//
-//        } catch (SQLException sqle) {
-//            sqle.printStackTrace();
-//        } catch (RuntimeException rte) {
-//            rte.printStackTrace();
-//        } finally {
-//            reg.closeDBConnection();
-//        }
-//    }
 }
