@@ -295,7 +295,7 @@ public class HealthyMe {
     public void printUsers(PrintWriter out) throws SQLException {
         out.println("<h2>User roster</h2>");
         out.println("<table>");
-        out.println(toHTML("USER_ID", "FIRST_NAME", "LAST_NAME", "AGE"));
+        out.println(toHTML("USER_ID", "FIRST_NAME", "LAST_NAME", "AGE (yrs)"));
 
         String query = "select * from Users";
 
@@ -360,7 +360,7 @@ public class HealthyMe {
     public void printWeightChange(PrintWriter out, ConditionParameters cp) throws SQLException {
         out.println("<h2>Weight Change</h2>");
         out.println("<table>");
-        out.println(toHTML("DIFFERENCE_IN_WEIGHT"));
+        out.println(toHTML("DIFFERENCE_IN_WEIGHT (kg)"));
         String query = String.format(
                 "select b.weight - (select s.weight \n" +
                         "                  from have_bodystats s, users u \n" +
@@ -395,7 +395,7 @@ public class HealthyMe {
     }
 
     public void printCaloriesBreakdown(PrintWriter out, ConditionParameters cp) throws SQLException {
-        out.println("<h2>Calorie Breakdown</h2>");
+        out.println("<h2>Calorie Breakdown (kcal)</h2>");
         out.println("<table>");
         out.println(toHTML("FOOD_NAME", "MEAL_TYPE", "CALORIES"));
         String query = String.format(
@@ -433,7 +433,7 @@ public class HealthyMe {
             optional_condition = String.format("and n.date_x = '%s'", cp.get_date_x());
         }
 
-        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "TOTAL_CALORIES_CONSUMED"));
+        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "TOTAL_CALORIES_CONSUMED (kcal)"));
         String query = String.format(
                 "select u.first_name, u.last_name, n.date_x, sum(n.calories) as total_calories_consumed \n" +
                         "from users u, need_nutrition n \n" +
@@ -471,7 +471,7 @@ public class HealthyMe {
             optional_condition = String.format("and a.date_x = '%s'", cp.get_date_x());
         }
 
-        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "TOTAL_CALORIES_BURNED"));
+        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "TOTAL_CALORIES_BURNED (kcal)"));
         String query = String.format(
                 "select u.first_name, u.last_name, s.date_x, sum(a.calories_burned)+sum(s.calories_burned) as total_calories_burned \n" +
                         "from users u, perform_activities a, walk_steps s \n" +
@@ -537,7 +537,7 @@ public class HealthyMe {
         out.println("<h2>Average Calories Burned</h2>");
         out.println("<table>");
 
-        out.println(toHTML("DATE_X", "AVG_CALORIES_BURNED"));
+        out.println(toHTML("DATE_X", "AVG_CALORIES_BURNED (kcal)"));
         String query = String.format(
                 "select a.date_x, round(avg(a.calories_burned), 2) as avg_calories_burned \n" +
                         "from users u, perform_activities a \n" +
@@ -571,7 +571,7 @@ public class HealthyMe {
         out.println("<h2>Average Calories Per Meal</h2>");
         out.println("<table>");
 
-        out.println(toHTML("DATE_X", "AVG_CALORIES_PER_MEAL", "NUM_MEALS"));
+        out.println(toHTML("DATE_X", "AVG_CALORIES_PER_MEAL (kcal)", "NUM_MEALS"));
         String query = String.format(
                 "select n.date_x, round(avg(n.calories), 2) as avg_calories_per_meal, count(n.user_id) as num_meals \n" +
                         "from users u, need_nutrition n \n" +
@@ -606,7 +606,7 @@ public class HealthyMe {
         out.println("<h2>Maximum Active Heart Rate Per Day</h2>");
         out.println("<table>");
 
-        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "START_TIME", "END_TIME", "MAX_HEART_RATE"));
+        out.println(toHTML("FIRST_NAME", "LAST_NAME", "DATE_X", "START_TIME", "END_TIME", "MAX_HEART_RATE (bpm)"));
         String query = String.format(
                 "select u.first_name, u.last_name, h.date_x, a.start_time, a.end_time, max(h.heart_rate) as max_heart_rate \n" +
                         "from users u, have_heartrate h, perform_activities a \n" +
@@ -648,7 +648,7 @@ public class HealthyMe {
         out.println("<h2>Average Heart Rate During Sleep</h2>");
         out.println("<table>");
 
-        out.println(toHTML("DATE_X", "START_TIME", "END_TIME", "AVG_HEART_RATE"));
+        out.println(toHTML("DATE_X", "START_TIME", "END_TIME", "AVG_HEART_RATE (bpm)"));
         String query = String.format(
                 "select h.date_x, s.start_time, s.end_time, round(avg(h.heart_rate), 2) as avg_heart_rate \n" +
                         "from users u, have_heartrate h, need_sleep s\n" +
@@ -688,7 +688,7 @@ public class HealthyMe {
         out.println("<h2>Average Resting Heart Rate Per Day</h2>");
         out.println("<table>");
 
-        out.println(toHTML("DATE_X", "AVG_RESTING_HEART_RATE"));
+        out.println(toHTML("DATE_X", "AVG_RESTING_HEART_RATE (bpm)"));
         String query = String.format(
                 "select h.date_x, round(avg(h.heart_rate), 2) as resting_heart_rate \n" +
                         "from users u, have_heartrate h \n" +

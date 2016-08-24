@@ -60,7 +60,7 @@ create table need_Nutrition (
 );
 
 create table need_Sleep (
-   sleep_session_id primary key,
+   sleep_session_id integer primary key,
    user_id integer not null,
    date_x date not null,
    start_time time not null,
